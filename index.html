@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta name="theme-color" content="#2b0512" />
+  <meta name="description" content="Маленькое романтическое признание — письмо, которое хочется дочитать до конца 💗" />
+  <title>У тебя есть одно особенное письмо 💌</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link
+    href="https://fonts.googleapis.com/css2?family=Comfortaa:wght@400;600;700&family=Marck+Script&display=swap"
+    rel="stylesheet"
+  />
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <div class="bg-layer" id="bgLayer" aria-hidden="true"></div>
+  <div class="bg-vignette" aria-hidden="true"></div>
+
+  <div class="fx-layer" id="fxLayer" aria-hidden="true"></div>
+
+  <main class="stage" id="stage">
+
+    <section class="screen screen--envelope is-active" id="screenEnvelope" aria-label="Закрытое письмо">
+      <div class="envelope-scene" id="envelopeScene">
+        <p class="envelope-title">У тебя есть одно особенное письмо…</p>
+
+        <div class="envelope-wrap" id="envelopeWrap">
+          <button class="envelope" id="envelope" type="button" aria-label="Открыть письмо">
+            <span class="envelope__glow" aria-hidden="true"></span>
+            <span class="envelope__back" aria-hidden="true"></span>
+
+            <span class="envelope__letter" aria-hidden="true">
+              <span class="envelope__letter-line"></span>
+              <span class="envelope__letter-line"></span>
+              <span class="envelope__letter-line envelope__letter-line--short"></span>
+              <span class="envelope__letter-heart">❤</span>
+            </span>
+
+            <span class="envelope__front" aria-hidden="true"></span>
+            <span class="envelope__flap" aria-hidden="true"></span>
+
+            <span class="envelope__seal" aria-hidden="true">
+              <svg viewBox="0 0 32 29" role="img" aria-hidden="true">
+                <path d="M16 29S0 18.5 0 8.8C0 3.9 3.8 0 8.6 0 12 0 14.6 1.9 16 4.6 17.4 1.9 20 0 23.4 0 28.2 0 32 3.9 32 8.8 32 18.5 16 29 16 29z" />
+              </svg>
+            </span>
+          </button>
+        </div>
+
+        <p class="envelope-cta">Открой меня 💗</p>
+        <p class="envelope-hint">Нажми, чтобы узнать кое-что важное</p>
+      </div>
+    </section>
+
+    <section class="screen screen--letter" id="screenLetter" aria-label="Признание">
+      <article class="letter" id="letter">
+        <span class="letter__decor letter__decor--tl" aria-hidden="true">❤</span>
+        <span class="letter__decor letter__decor--br" aria-hidden="true">❤</span>
+
+        <h2 class="letter__title">Есть кое-что, что я давно хотел тебе сказать…</h2>
+
+        <div class="letter__body" id="letterBody">
+          <p>Знаешь, я довольно долго думал, стоит ли вообще тебе это говорить. Несколько раз собирался написать, потом передумывал, потому что не знал, как правильно подобрать слова. Но сегодня решил, что лучше сказать всё честно, чем продолжать держать это в себе.</p>
+          <p>Мне нравится с тобой общаться. Мне нравится, когда ты появляешься в переписке, когда мы о чём-то разговариваем и когда даже обычный разговор неожиданно поднимает настроение. Иногда достаточно совсем маленькой вещи, связанной с тобой, чтобы мой день стал чуточку лучше.</p>
+          <p>Я не знаю, замечала ли ты это раньше, но со временем ты стала для меня человеком, о котором я думаю чаще, чем ожидал. Мне интересно, как у тебя прошёл день, что тебя радует, что тебя смешит и о чём ты мечтаешь. Мне хочется узнавать тебя лучше, слышать твои истории и просто проводить с тобой время.</p>
+          <p>Я долго пытался понять, как назвать это чувство. И, кажется, наконец понял. Ты мне нравишься. Не просто как человек, с которым приятно поговорить, а намного сильнее. Мне нравится твой характер, твоя индивидуальность и то особенное чувство, которое у меня появляется, когда мы общаемся.</p>
+          <p>Я не хочу обещать тебе идеальную сказку или говорить красивые слова только ради впечатления. Я просто хочу быть честным с тобой. Мне хочется попробовать построить что-то настоящее, узнавать друг друга, поддерживать друг друга и вместе создавать хорошие воспоминания.</p>
+          <p>Я понимаю, что такие слова могут застать врасплох. Тебе не нужно искать какой-то идеальный ответ. Мне было важно, чтобы ты знала о моих чувствах, потому что ты действительно стала для меня особенной.</p>
+          <p>И вот я наконец подошёл к главному вопросу. Возможно, я немного волнуюсь, пока ты читаешь это письмо, но всё равно спрошу.</p>
+          <p>Ты мне очень нравишься. И мне бы хотелось узнать, есть ли у нас шанс стать чем-то большим, чем просто знакомые или друзья.</p>
+          <p>Хочешь попробовать начать нашу маленькую историю вместе со мной? ❤️</p>
+        </div>
+
+        <div class="letter__actions">
+          <button class="btn btn--ghost" id="skipTypingBtn" type="button">Показать весь текст ✨</button>
+          <button class="btn btn--primary is-hidden" id="finishLetterBtn" type="button">Я дочитала 💌</button>
+        </div>
+        <p class="letter__hint" id="letterHint">Нажми на письмо, чтобы показать текст сразу</p>
+      </article>
+    </section>
+
+    <section class="screen screen--question" id="screenQuestion" aria-label="Главный вопрос">
+      <div class="question">
+        <p class="question__eyebrow">У меня есть к тебе один важный вопрос…</p>
+
+        <button class="heart" id="heart" type="button" aria-label="Сердце">
+          <svg class="heart__svg" viewBox="0 0 32 29" aria-hidden="true">
+            <defs>
+              <linearGradient id="heartGradient" x1="0" y1="0" x2="0.3" y2="1">
+                <stop offset="0%" stop-color="#ff9ec4" />
+                <stop offset="48%" stop-color="#ff4d8d" />
+                <stop offset="100%" stop-color="#c81e4e" />
+              </linearGradient>
+            </defs>
+            <path class="heart__path" d="M16 29S0 18.5 0 8.8C0 3.9 3.8 0 8.6 0 12 0 14.6 1.9 16 4.6 17.4 1.9 20 0 23.4 0 28.2 0 32 3.9 32 8.8 32 18.5 16 29 16 29z" />
+          </svg>
+        </button>
+
+        <h2 class="question__text">Будешь моей девушкой? 💗</h2>
+
+        <div class="question__actions" id="questionActions">
+          <button class="btn btn--yes" id="yesBtn" type="button">Да 💗</button>
+          <span class="btn-placeholder" id="noPlaceholder" aria-hidden="true"></span>
+          <button class="btn btn--no" id="noBtn" type="button">Нет 🙈</button>
+        </div>
+      </div>
+    </section>
+
+    <section class="screen screen--final" id="screenFinal" aria-label="Финал">
+      <div class="final">
+        <h2 class="final__title">УРАААА! 💗</h2>
+        <p class="final__subtitle">Кажется, у нашей истории только что появилась первая глава…</p>
+
+        <div class="final__heart" aria-hidden="true">
+          <svg class="final__heart-svg" viewBox="0 0 32 29" aria-hidden="true">
+            <defs>
+              <linearGradient id="finalHeartGradient" x1="0" y1="0" x2="0.3" y2="1">
+                <stop offset="0%" stop-color="#ffb3d1" />
+                <stop offset="45%" stop-color="#ff5f9e" />
+                <stop offset="100%" stop-color="#b90f45" />
+              </linearGradient>
+            </defs>
+            <path class="final__heart-path" d="M16 29S0 18.5 0 8.8C0 3.9 3.8 0 8.6 0 12 0 14.6 1.9 16 4.6 17.4 1.9 20 0 23.4 0 28.2 0 32 3.9 32 8.8 32 18.5 16 29 16 29z" />
+          </svg>
+        </div>
+
+        <p class="final__text">
+          Спасибо, что дочитала моё письмо до конца. Я очень рад, что решился тебе всё рассказать.
+          Теперь осталось только улыбнуться, перестать волноваться и сделать наш следующий шаг вместе. ❤️
+        </p>
+
+        <a class="btn btn--telegram" id="telegramBtn" href="https://t.me/" target="_blank" rel="noopener noreferrer">
+          Продолжить в Telegram ✈️
+        </a>
+
+        <p class="final__ps">P.S. Теперь у тебя есть секрет, который мы будем помнить 😂❤️</p>
+
+        <button class="final__restart" id="restartBtn" type="button">Пройти заново ↺</button>
+      </div>
+    </section>
+
+  </main>
+
+  <script src="script.js"></script>
+</body>
+</html>
