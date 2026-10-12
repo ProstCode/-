@@ -11,7 +11,7 @@ const MAX_BG_ITEMS = 26;
 
 const $ = (selector, root = document) => root.querySelector(selector);
 const $$ = (selector, root = document) =>
-  Array.from(root.querySelectorAll(selector));
+  [].slice.call((root || document).querySelectorAll(selector));
 
 const rand = (min, max) => Math.random() * (max - min) + min;
 const pick = (arr) => arr[Math.floor(Math.random() * arr.length)];
@@ -187,7 +187,7 @@ function typeStep() {
   const p = paraEls[typing.pi];
 
   if (!typing.chars.length) {
-    typing.chars = Array.from(baseParagraphs[typing.pi]);
+    typing.chars = baseParagraphs[typing.pi].split("");
     typing.ci = 0;
     typing.textNode = document.createTextNode("");
     p.appendChild(typing.textNode);
@@ -652,103 +652,101 @@ function clearFx() {
   if (fxLayer) fxLayer.innerHTML = "";
 }
 
-let musicAudio = null;
-let musicSoundOn = false;
-let musicGestureArmed = false;
-let musicHintShown = false;
-let musicBroken = false;
+/* ── Музыка (полностью безопасна — не ломает сайт при ошибке) ─────────────── */
 
-function musicEventsRemove(handler) {
-  ["pointerdown", "touchstart", "touchend", "click", "keydown"].forEach((t) =>
-    document.removeEventListener(t, handler, true),
-  );
+var _musicReady = false;
+var _musicAudio = null;
+var _musicSoundOn = false;
+var _musicBroken = false;
+
+function _musicPlaySafe() {
+  if (_musicBroken || !_musicAudio) return false;
+  try {
+    var p = _musicAudio.play();
+    if (p && typeof p.then === "function") {
+      p.catch(function () {});
+    }
+    return true;
+  } catch (e) {
+    return false;
+  }
 }
 
-function musicEventsAdd(handler) {
-  ["pointerdown", "touchstart", "touchend", "click", "keydown"].forEach((t) =>
-    document.addEventListener(t, handler, true),
-  );
-}
-
-function playOnce() {
-  if (!musicAudio) return Promise.resolve(false);
-  return musicAudio.play().then(
-    () => true,
-    () => false,
-  );
-}
-
-function enableSound() {
-  if (!musicAudio || musicBroken) return Promise.resolve(false);
-  musicAudio.muted = false;
-  musicAudio.volume = MUSIC_VOLUME;
-  if (musicAudio.readyState === 0) musicAudio.load();
-  return playOnce().then((ok) => {
-    if (ok) {
-      musicSoundOn = true;
+function _musicEnableSound() {
+  if (_musicBroken || !_musicAudio) return false;
+  try {
+    _musicAudio.muted = false;
+    _musicAudio.volume = MUSIC_VOLUME;
+    _musicAudio.load();
+    if (_musicPlaySafe()) {
+      _musicSoundOn = true;
       return true;
     }
-    musicAudio.src = MUSIC_URL;
-    musicAudio.load();
-    return playOnce().then((ok2) => {
-      if (ok2) musicSoundOn = true;
-      return ok2;
-    });
-  });
+    _musicAudio.src = MUSIC_URL;
+    _musicAudio.load();
+    if (_musicPlaySafe()) {
+      _musicSoundOn = true;
+      return true;
+    }
+    return false;
+  } catch (e) {
+    return false;
+  }
 }
 
-function armMusicUnlock() {
-  if (musicGestureArmed || !MUSIC_URL || musicBroken) return;
-  musicGestureArmed = true;
-
-  const onGesture = () => {
-    musicEventsRemove(onGesture);
-    enableSound().then((ok) => {
-      if (!ok) {
-        musicGestureArmed = false;
-        armMusicUnlock();
-        if (!musicHintShown) {
-          musicHintShown = true;
-          showToast("Нажми на экран, чтобы включить музыку 🔊");
-        }
-      }
-    });
+function _musicTryGesture() {
+  if (_musicSoundOn || _musicBroken || _musicReady) return;
+  _musicReady = true;
+  var g = function () {
+    try {
+      document.removeEventListener("touchstart", g, true);
+      document.removeEventListener("click", g, true);
+      document.removeEventListener("pointerdown", g, true);
+      _musicEnableSound();
+    } catch (e) {}
   };
-
-  musicEventsAdd(onGesture);
+  document.addEventListener("touchstart", g, true);
+  document.addEventListener("click", g, true);
+  document.addEventListener("pointerdown", g, true);
 }
 
-function startMusic() {
-  if (!musicAudio || musicBroken) return;
-  playOnce().then((ok) => {
-    if (ok) {
-      musicSoundOn = true;
+function _musicStart() {
+  if (_musicBroken || _musicSoundOn || !_musicAudio) return;
+  try {
+    if (_musicPlaySafe()) {
+      _musicSoundOn = true;
       return;
     }
-    if (!musicAudio || musicBroken) return;
-    musicAudio.muted = true;
-    playOnce().then(() => {
-      armMusicUnlock();
-    });
-  });
+    _musicAudio.muted = true;
+    _musicPlaySafe();
+    _musicAudio.muted = false;
+    if (_musicPlaySafe()) {
+      _musicSoundOn = true;
+      return;
+    }
+    _musicTryGesture();
+  } catch (e) {}
 }
 
 function setupMusic() {
   if (!MUSIC_URL) return;
-
-  musicAudio = new Audio(MUSIC_URL);
-  musicAudio.loop = true;
-  musicAudio.volume = MUSIC_VOLUME;
-  musicAudio.preload = "auto";
-  musicAudio.load();
-
-  musicAudio.addEventListener("error", () => {
-    musicBroken = true;
-    musicAudio = null;
-  });
-
-  startMusic();
+  try {
+    _musicAudio = new Audio(MUSIC_URL);
+    _musicAudio.loop = true;
+    _musicAudio.volume = MUSIC_VOLUME;
+    _musicAudio.preload = "auto";
+    _musicAudio.load();
+    _musicAudio.addEventListener("error", function () {
+      _musicBroken = true;
+      _musicAudio = null;
+    });
+    _musicStart();
+  } catch (e) {
+    _musicBroken = true;
+  }
 }
+
+/* ── Конец музыки ────────────────────────────────────────────────────────── */
 
 function handleResize() {
   if (!noEscaped || currentScreen !== "question") return;
