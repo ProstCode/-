@@ -655,40 +655,82 @@ function clearFx() {
 let musicAudio = null;
 let musicSoundOn = false;
 let musicGestureArmed = false;
+let musicHintShown = false;
+let musicBroken = false;
 
-function armMusicUnmute() {
-  if (musicGestureArmed) return;
+function musicEventsRemove(handler) {
+  ["pointerdown", "touchstart", "touchend", "click", "keydown"].forEach((t) =>
+    document.removeEventListener(t, handler, true),
+  );
+}
+
+function musicEventsAdd(handler) {
+  ["pointerdown", "touchstart", "touchend", "click", "keydown"].forEach((t) =>
+    document.addEventListener(t, handler, true),
+  );
+}
+
+function playOnce() {
+  if (!musicAudio) return Promise.resolve(false);
+  return musicAudio.play().then(
+    () => true,
+    () => false,
+  );
+}
+
+function enableSound() {
+  if (!musicAudio || musicBroken) return Promise.resolve(false);
+  musicAudio.muted = false;
+  musicAudio.volume = MUSIC_VOLUME;
+  if (musicAudio.readyState === 0) musicAudio.load();
+  return playOnce().then((ok) => {
+    if (ok) {
+      musicSoundOn = true;
+      return true;
+    }
+    musicAudio.src = MUSIC_URL;
+    musicAudio.load();
+    return playOnce().then((ok2) => {
+      if (ok2) musicSoundOn = true;
+      return ok2;
+    });
+  });
+}
+
+function armMusicUnlock() {
+  if (musicGestureArmed || !MUSIC_URL || musicBroken) return;
   musicGestureArmed = true;
 
-  const release = () => {
-    document.removeEventListener("pointerdown", release, true);
-    document.removeEventListener("touchstart", release, true);
-    document.removeEventListener("keydown", release, true);
-    document.removeEventListener("click", release, true);
-    if (!musicAudio) return;
-    musicAudio.muted = false;
-    musicSoundOn = true;
-    if (musicAudio.paused) musicAudio.play().catch(() => {});
+  const onGesture = () => {
+    musicEventsRemove(onGesture);
+    enableSound().then((ok) => {
+      if (!ok) {
+        musicGestureArmed = false;
+        armMusicUnlock();
+        if (!musicHintShown) {
+          musicHintShown = true;
+          showToast("Нажми на экран, чтобы включить музыку 🔊");
+        }
+      }
+    });
   };
 
-  document.addEventListener("pointerdown", release, true);
-  document.addEventListener("touchstart", release, true);
-  document.addEventListener("keydown", release, true);
-  document.addEventListener("click", release, true);
+  musicEventsAdd(onGesture);
 }
 
 function startMusic() {
-  if (!musicAudio) return;
-  musicAudio.play().then(
-    () => {
+  if (!musicAudio || musicBroken) return;
+  playOnce().then((ok) => {
+    if (ok) {
       musicSoundOn = true;
-    },
-    () => {
-      musicAudio.muted = true;
-      musicAudio.play().catch(() => {});
-      armMusicUnmute();
-    },
-  );
+      return;
+    }
+    if (!musicAudio || musicBroken) return;
+    musicAudio.muted = true;
+    playOnce().then(() => {
+      armMusicUnlock();
+    });
+  });
 }
 
 function setupMusic() {
@@ -699,6 +741,11 @@ function setupMusic() {
   musicAudio.volume = MUSIC_VOLUME;
   musicAudio.preload = "auto";
   musicAudio.load();
+
+  musicAudio.addEventListener("error", () => {
+    musicBroken = true;
+    musicAudio = null;
+  });
 
   startMusic();
 }
